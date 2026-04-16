@@ -95,3 +95,37 @@ function handleLogout() {
     alert('로그아웃되었습니다.');
     navigateTo('index.html');
 }
+
+/**
+ * 환영 효과 (폭죽 효과) 생성 함수
+ */
+function createConfetti() {
+    const container = document.getElementById('confetti-container');
+    const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#03a9f4', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
+
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti-piece';
+        confetti.style.left = Math.random() * 100 + 'vw';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.width = Math.random() * 10 + 5 + 'px';
+        confetti.style.height = confetti.style.width;
+        confetti.style.borderRadius = '50%';
+        confetti.style.opacity = '1';
+        
+        container.appendChild(confetti);
+
+        const duration = Math.random() * 3 + 2;
+        const delay = Math.random() * 2;
+
+        confetti.animate([
+            { transform: `translateY(-20px) rotate(0deg)`, opacity: 1 },
+            { transform: `translateY(${window.innerHeight + 20}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+        ], {
+            duration: duration * 1000,
+            delay: delay * 1000,
+            easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            fill: 'forwards'
+        });
+    }
+}
