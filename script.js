@@ -129,3 +129,20 @@ function createConfetti() {
         });
     }
 }
+
+/**
+ * 메인 대시보드 로그인 확인 함수
+ */
+function checkLogin() {
+    const storedData = localStorage.getItem('userData');
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+    if (!storedData || isLoggedIn !== 'true') {
+        alert('로그인이 필요한 페이지입니다.');
+        navigateTo('login.html');
+        return;
+    }
+
+    const userData = JSON.parse(storedData);
+    document.getElementById('dash-user-name').textContent = userData.name;
+}
