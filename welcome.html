@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>환영합니다 - Modern App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="displayUserInfo()">
+    <div class="container">
+        <h1>환영합니다!</h1>
+        <p class="subtitle" id="welcome-message">사용자님, 웹앱을 자유롭게 이용해 보세요.</p>
+        
+        <div class="user-info-card" style="margin-top: 2rem; padding: 1.5rem; background: #f8fafc; border-radius: 1rem; text-align: left;">
+            <p><strong>이름:</strong> <span id="user-name">로딩 중...</span></p>
+            <p><strong>이메일:</strong> <span id="user-email">로딩 중...</span></p>
+        </div>
+
+        <div class="nav-buttons" style="margin-top: 2rem;">
+            <button onclick="handleLogout()" class="btn btn-outline" style="width: 100%; padding: 0.75rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer;">로그아웃</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>홈 - Modern App</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .btn-outline {
+            background: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        .btn-outline:hover {
+            background: #f1f5f9;
+        }
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Modern App</h1>
+        <p class="subtitle">깔끔하고 세련된 웹앱에 오신 것을 환영합니다.</p>
+        
+        <div class="nav-buttons">
+            <button onclick="navigateTo('login.html')" class="btn btn-primary" style="text-align: center; cursor: pointer;">로그인하러 가기</button>
+            <button onclick="navigateTo('signup.html')" class="btn btn-outline" style="padding: 0.75rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer;">새 계정 만들기</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

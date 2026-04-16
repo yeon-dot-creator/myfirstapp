@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - Modern App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Create Account</h1>
+        <p class="subtitle">시작하려면 정보를 입력해 주세요.</p>
+        
+        <form onsubmit="handleSignup(event)">
+            <div class="form-group">
+                <label for="name">이름</label>
+                <input type="text" id="name" placeholder="홍길동" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">이메일 주소</label>
+                <input type="email" id="email" placeholder="name@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">비밀번호 확인</label>
+                <input type="password" id="confirm-password" placeholder="••••••••" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">회원가입</button>
+        </form>
+        
+        <div class="footer-link">
+            이미 계정이 있으신가요? <span onclick="navigateTo('login.html')" style="color: var(--primary-color); cursor: pointer; font-weight: 500; text-decoration: underline;">로그인</span>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
