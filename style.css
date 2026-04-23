@@ -27,7 +27,7 @@ body {
     align-items: center;
     justify-content: center;
     color: var(--text-main);
-    overflow: hidden;
+    padding: 2rem 0; /* 스크롤 시 상하 여백 확보 */
 }
 
 .container {

@@ -6,8 +6,8 @@
     <title>메인 대시보드 - MyFirstApp</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body onload="checkLogin()">
-    <div class="container" style="max-width: 800px;">
+<body onload="checkLogin()" style="align-items: flex-start;">
+    <div class="container" style="max-width: 1100px;">
         <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
             <h1 style="margin-bottom: 0;">My Dashboard</h1>
             <button onclick="handleLogout()" class="btn btn-outline" style="width: auto; padding: 0.5rem 1rem; margin-top: 0;">로그아웃</button>
@@ -16,23 +16,202 @@
         <main>
             <section class="animate-pop">
                 <h2>환영합니다, <span id="dash-user-name">사용자</span>님!</h2>
-                <p class="subtitle" style="text-align: left;">오늘의 소식을 확인해 보세요.</p>
+                <p class="subtitle" style="text-align: left;">글로벌 경제 뉴스를 한눈에 확인해 보세요.</p>
             </section>
 
-            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
-                <div class="card" style="background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow);">
-                    <h3>내 프로필</h3>
-                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">회원 정보를 수정하거나 확인합니다.</p>
+            <!-- 키워드 검색 섹션 -->
+            <section style="margin-top: 1.5rem; padding: 1.5rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 1rem; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                <h3 style="margin: 0 0 0.75rem 0; color: white; font-size: 1.1rem;">🔍 키워드로 경제 뉴스 검색</h3>
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <input type="text" id="search-keyword" placeholder="예: inflation, tariff, Fed..." 
+                        style="flex: 1; min-width: 180px; padding: 0.75rem 1rem; border: none; border-radius: 0.5rem; font-size: 1rem; outline: none; background: rgba(255,255,255,0.95);"
+                        onkeypress="if(event.key==='Enter') searchNews()">
+                    <button onclick="searchNews()" 
+                        style="padding: 0.75rem 1.25rem; border: none; border-radius: 0.5rem; background: white; color: #667eea; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: transform 0.2s ease;"
+                        onmouseover="this.style.transform='scale(1.05)';"
+                        onmouseout="this.style.transform='scale(1)';">
+                        검색
+                    </button>
+                    <button onclick="openSelectedSearch()" 
+                        style="padding: 0.75rem 1.25rem; border: none; border-radius: 0.5rem; background: rgba(255,255,255,0.2); color: white; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: background 0.2s ease; backdrop-filter: blur(4px);"
+                        onmouseover="this.style.background='rgba(255,255,255,0.35)';"
+                        onmouseout="this.style.background='rgba(255,255,255,0.2)';">
+                        🚀 선택 열기
+                    </button>
+                    <button onclick="openAllSearch()" 
+                        style="padding: 0.75rem 1.25rem; border: none; border-radius: 0.5rem; background: rgba(255,255,255,0.2); color: white; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: background 0.2s ease; backdrop-filter: blur(4px);"
+                        onmouseover="this.style.background='rgba(255,255,255,0.35)';"
+                        onmouseout="this.style.background='rgba(255,255,255,0.2)';">
+                        🌐 모두 열기
+                    </button>
+                    <button onclick="resetSearch()" 
+                        style="padding: 0.75rem 1rem; border: 2px solid rgba(255,255,255,0.5); border-radius: 0.5rem; background: transparent; color: white; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: background 0.2s ease;"
+                        onmouseover="this.style.background='rgba(255,255,255,0.15)';"
+                        onmouseout="this.style.background='transparent';">
+                        ↺ 초기화
+                    </button>
                 </div>
-                <div class="card" style="background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow);">
-                    <h3>새 소식</h3>
-                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">새로운 공지사항과 업데이트를 확인하세요.</p>
+                <p id="search-status" style="margin: 0.5rem 0 0 0; color: rgba(255,255,255,0.8); font-size: 0.8rem;"></p>
+
+                <!-- 검색 히스토리 -->
+                <div id="search-history-section" style="margin-top: 0.75rem; display: none;">
+                    <p style="margin: 0 0 0.4rem 0; color: rgba(255,255,255,0.7); font-size: 0.75rem;">📚 최근 검색:</p>
+                    <div id="search-history" style="display: flex; gap: 0.4rem; flex-wrap: wrap;"></div>
                 </div>
-                <div class="card" style="background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow);">
-                    <h3>설정</h3>
-                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.5rem;">앱의 환경설정을 변경합니다.</p>
+            </section>
+
+            <!-- 전체 선택/해제 -->
+            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 1.5rem; padding: 0.5rem 0;">
+                <label style="display: flex; align-items: center; gap: 0.4rem; cursor: pointer; font-size: 0.9rem; color: var(--text-muted);">
+                    <input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll(this.checked)" checked
+                        style="width: 16px; height: 16px; accent-color: #667eea; cursor: pointer;">
+                    전체 선택 / 해제
+                </label>
+                <span style="font-size: 0.8rem; color: var(--text-muted);" id="selected-count">8개 선택됨</span>
+            </div>
+
+            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 0.5rem;">
+                <!-- BBC News Card -->
+                <div class="card" id="news-card-1" style="background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: #bb1919; width: 8px; height: 1.5rem; border-radius: 4px;"></span>
+                            <h3 style="margin: 0;">BBC News</h3>
+                        </div>
+                        <input type="checkbox" class="outlet-checkbox" data-card="news-card-1" checked style="width: 16px; height: 16px; accent-color: #667eea; cursor: pointer;" onchange="updateSelectedCount()">
+                    </div>
+                    <p style="font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 0.5rem;">BBC 비즈니스</p>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">영국 공영방송의 글로벌 경제·비즈니스 뉴스</p>
+                    <a href="https://www.bbc.com/news/business" target="_blank" class="btn btn-primary" style="display: inline-block; width: auto; font-size: 0.875rem; padding: 0.5rem 1rem;">기사 보기</a>
+                </div>
+
+                <!-- NYT Card -->
+                <div class="card" id="news-card-2" style="background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: #121212; width: 8px; height: 1.5rem; border-radius: 4px;"></span>
+                            <h3 style="margin: 0;">NY Times</h3>
+                        </div>
+                        <input type="checkbox" class="outlet-checkbox" data-card="news-card-2" checked style="width: 16px; height: 16px; accent-color: #667eea; cursor: pointer;" onchange="updateSelectedCount()">
+                    </div>
+                    <p style="font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 0.5rem;">NYT 비즈니스</p>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">미국 최고 권위지의 경제·산업 심층 보도</p>
+                    <a href="https://www.nytimes.com/section/business" target="_blank" class="btn btn-primary" style="display: inline-block; width: auto; font-size: 0.875rem; padding: 0.5rem 1rem;">기사 보기</a>
+                </div>
+
+                <!-- The Guardian Card -->
+                <div class="card" id="news-card-3" style="background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: #052962; width: 8px; height: 1.5rem; border-radius: 4px;"></span>
+                            <h3 style="margin: 0;">The Guardian</h3>
+                        </div>
+                        <input type="checkbox" class="outlet-checkbox" data-card="news-card-3" checked style="width: 16px; height: 16px; accent-color: #667eea; cursor: pointer;" onchange="updateSelectedCount()">
+                    </div>
+                    <p style="font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 0.5rem;">가디언 비즈니스</p>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">영국 진보 매체의 경제·환경·사회 뉴스</p>
+                    <a href="https://www.theguardian.com/business" target="_blank" class="btn btn-primary" style="display: inline-block; width: auto; font-size: 0.875rem; padding: 0.5rem 1rem;">기사 보기</a>
+                </div>
+
+                <!-- Wall Street Journal Card -->
+                <div class="card" id="news-card-4" style="background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: #0274B6; width: 8px; height: 1.5rem; border-radius: 4px;"></span>
+                            <h3 style="margin: 0;">Wall Street Journal</h3>
+                        </div>
+                        <input type="checkbox" class="outlet-checkbox" data-card="news-card-4" checked style="width: 16px; height: 16px; accent-color: #667eea; cursor: pointer;" onchange="updateSelectedCount()">
+                    </div>
+                    <p style="font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 0.5rem;">WSJ 이코노미</p>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">월가 중심의 금융·경제 전문 보도</p>
+                    <a href="https://www.wsj.com/economy" target="_blank" class="btn btn-primary" style="display: inline-block; width: auto; font-size: 0.875rem; padding: 0.5rem 1rem;">기사 보기</a>
+                </div>
+
+                <!-- Reuters Card -->
+                <div class="card" id="news-card-5" style="background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: #FF8000; width: 8px; height: 1.5rem; border-radius: 4px;"></span>
+                            <h3 style="margin: 0;">Reuters</h3>
+                        </div>
+                        <input type="checkbox" class="outlet-checkbox" data-card="news-card-5" checked style="width: 16px; height: 16px; accent-color: #667eea; cursor: pointer;" onchange="updateSelectedCount()">
+                    </div>
+                    <p style="font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 0.5rem;">로이터 비즈니스</p>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">세계 최대 통신사의 실시간 경제 속보</p>
+                    <a href="https://www.reuters.com/business/" target="_blank" class="btn btn-primary" style="display: inline-block; width: auto; font-size: 0.875rem; padding: 0.5rem 1rem;">기사 보기</a>
+                </div>
+
+                <!-- Bloomberg Card -->
+                <div class="card" id="news-card-6" style="background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: #472a91; width: 8px; height: 1.5rem; border-radius: 4px;"></span>
+                            <h3 style="margin: 0;">Bloomberg</h3>
+                        </div>
+                        <input type="checkbox" class="outlet-checkbox" data-card="news-card-6" checked style="width: 16px; height: 16px; accent-color: #667eea; cursor: pointer;" onchange="updateSelectedCount()">
+                    </div>
+                    <p style="font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 0.5rem;">블룸버그 이코노믹스</p>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">금융 데이터와 시장 분석 전문 매체</p>
+                    <a href="https://www.bloomberg.com/economics" target="_blank" class="btn btn-primary" style="display: inline-block; width: auto; font-size: 0.875rem; padding: 0.5rem 1rem;">기사 보기</a>
+                </div>
+
+                <!-- Financial Times Card -->
+                <div class="card" id="news-card-7" style="background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: #FBB03B; width: 8px; height: 1.5rem; border-radius: 4px;"></span>
+                            <h3 style="margin: 0;">Financial Times</h3>
+                        </div>
+                        <input type="checkbox" class="outlet-checkbox" data-card="news-card-7" checked style="width: 16px; height: 16px; accent-color: #667eea; cursor: pointer;" onchange="updateSelectedCount()">
+                    </div>
+                    <p style="font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 0.5rem;">FT 글로벌 이코노미</p>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">런던 기반 세계적 경제·금융 전문지</p>
+                    <a href="https://www.ft.com/global-economy" target="_blank" class="btn btn-primary" style="display: inline-block; width: auto; font-size: 0.875rem; padding: 0.5rem 1rem;">기사 보기</a>
+                </div>
+
+                <!-- CNBC Card -->
+                <div class="card" id="news-card-8" style="background: white; padding: 1.5rem; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow); transition: transform 0.3s ease, box-shadow 0.3s ease;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='var(--shadow)';">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="background: #005594; width: 8px; height: 1.5rem; border-radius: 4px;"></span>
+                            <h3 style="margin: 0;">CNBC</h3>
+                        </div>
+                        <input type="checkbox" class="outlet-checkbox" data-card="news-card-8" checked style="width: 16px; height: 16px; accent-color: #667eea; cursor: pointer;" onchange="updateSelectedCount()">
+                    </div>
+                    <p style="font-weight: 600; font-size: 1rem; color: var(--text-color); margin-bottom: 0.5rem;">CNBC 이코노미</p>
+                    <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">미국 경제 전문 방송의 시장·투자 뉴스</p>
+                    <a href="https://www.cnbc.com/economy/" target="_blank" class="btn btn-primary" style="display: inline-block; width: auto; font-size: 0.875rem; padding: 0.5rem 1rem;">기사 보기</a>
                 </div>
             </div>
+
+            <!-- 비교 메모장 섹션 -->
+            <section style="margin-top: 2.5rem; padding: 1.5rem; background: white; border-radius: 1rem; border: 1px solid var(--border-color); box-shadow: var(--shadow);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                    <h3 style="margin: 0;">📝 비교 분석 메모</h3>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button onclick="saveNotes()" 
+                            style="padding: 0.4rem 1rem; border: none; border-radius: 0.4rem; background: #667eea; color: white; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: opacity 0.2s;"
+                            onmouseover="this.style.opacity='0.85';" onmouseout="this.style.opacity='1';">
+                            💾 저장
+                        </button>
+                        <button onclick="clearNotes()" 
+                            style="padding: 0.4rem 1rem; border: 1px solid #e0e0e0; border-radius: 0.4rem; background: white; color: #888; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: background 0.2s;"
+                            onmouseover="this.style.background='#f5f5f5';" onmouseout="this.style.background='white';">
+                            🗑️ 지우기
+                        </button>
+                    </div>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.75rem;">각 언론사의 논조와 관점을 비교하며 메모해 보세요. 키워드별로 자동 저장됩니다.</p>
+                <div id="notes-keyword-label" style="display: none; margin-bottom: 0.5rem;">
+                    <span style="background: #667eea; color: white; padding: 0.2rem 0.6rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 600;" id="notes-current-keyword"></span>
+                </div>
+                <textarea id="comparison-notes" rows="6" 
+                    placeholder="예시:&#10;[BBC] 소비자 물가 상승에 초점, 서민 생활 영향 강조&#10;[WSJ] 연준 금리 정책과 시장 반응 중심 분석&#10;[Reuters] 글로벌 공급망 데이터 기반 객관적 보도&#10;[Guardian] 환경·사회적 비용 관점에서 접근"
+                    style="width: 100%; padding: 1rem; border: 1px solid #e0e0e0; border-radius: 0.5rem; font-size: 0.9rem; line-height: 1.6; resize: vertical; outline: none; font-family: inherit; box-sizing: border-box; transition: border-color 0.2s;"
+                    onfocus="this.style.borderColor='#667eea';" 
+                    onblur="this.style.borderColor='#e0e0e0';"></textarea>
+                <p id="notes-save-status" style="margin: 0.4rem 0 0 0; font-size: 0.75rem; color: #4caf50;"></p>
+            </section>
         </main>
     </div>
     <script src="script.js"></script>
